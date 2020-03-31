@@ -65,13 +65,13 @@ def Jacobian_Callback(data):
     # print(joint_states)
     # print(vel_joints)
 
-    # pub1.publish(0)
-    # pub2.publish(0)
-    # pub3.publish(0)
-    # pub4.publish(0)
-    # pub5.publish(0)
-    # pub6.publish(0)
-    # pub7.publish(0)         
+    pub1.publish(vel_joints[0])
+    pub2.publish(vel_joints[1])
+    pub3.publish(vel_joints[2])
+    pub4.publish(vel_joints[3])
+    pub5.publish(vel_joints[4])
+    pub6.publish(vel_joints[5])
+    pub7.publish(vel_joints[6])         
     
 
 def Joint_State_Callback(data):
@@ -215,5 +215,4 @@ def main():
 
 
 if __name__=='__main__':
-    # print("yo")
     main()
