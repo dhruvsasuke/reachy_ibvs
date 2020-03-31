@@ -1,0 +1,41 @@
+reachy:
+
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  shoulder_pitch_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: shoulder_pitch
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  shoulder_roll_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: shoulder_roll
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  arm_yaw_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: arm_yaw
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+    
+  elbow_pitch_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: elbow_pitch
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+    
+  forearm_yaw_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: forearm_yaw
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  wrist_pitch_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: wrist_pitch
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  wrist_roll_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: wrist_roll
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+ 

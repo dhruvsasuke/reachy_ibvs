@@ -1,0 +1,13 @@
+digraph G {
+"shoulder_to_arm" -> "upper_arm"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"shoulder" -> "shoulder_to_arm"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"upper_arm" -> "forearm"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"forearm" -> "wrist"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"base" -> "shoulder"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"wrist" -> "wrist_hand"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+"wrist_hand" -> "hand_ball"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10.204 Hz\nMost recent transform: 1576093447.129 ( 0.003 sec old)\nBuffer length: 4.900 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1576093447.131"[ shape=plaintext ] ;
+ }->"base";
+}

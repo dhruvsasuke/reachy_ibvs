@@ -1,0 +1,406 @@
+<?xml version="1.0"?>
+<robot name="Reachy">
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8 0 0 1"/>
+  </material>
+
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <robotNamespace>/reachy</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="kinect">
+    <sensor type="depth" name="camera1">
+        <always_on>1</always_on>
+        <visualize>true</visualize>             
+        <camera>
+            <horizontal_fov>1.047</horizontal_fov>  
+            <image>
+                <width>640</width>
+                <height>480</height>
+                <format>R8G8B8</format>
+            </image>
+            <depth_camera>
+            </depth_camera>
+            <clip>
+                <near>0.1</near>
+                <far>100</far>
+            </clip>
+        </camera>
+             <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+             <alwaysOn>true</alwaysOn>
+                <updateRate>10.0</updateRate>
+                <cameraName>camera</cameraName>
+                <frameName>kinect</frameName>                   
+            <imageTopicName>rgb/image_raw</imageTopicName>
+            <depthImageTopicName>depth/image_raw</depthImageTopicName>
+            <pointCloudTopicName>depth/points</pointCloudTopicName>
+            <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>              
+            <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>            
+            <pointCloudCutoff>0.1</pointCloudCutoff>                
+                <hackBaseline>0.1</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+            <CxPrime>0.0</CxPrime>
+            <Cx>0.0</Cx>
+            <Cy>0.0</Cy>
+            <focalLength>0.0</focalLength>
+            </plugin>
+    </sensor>
+  </gazebo>
+
+
+  <link name="world"/>
+
+  <link name="base">
+    <visual>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-y-visual.stl"></mesh>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "1.043e-4" ixy= "6.147e-6" ixz= "-1.971e-6" iyy= "1.364e-4" iyz= "1.466e-5" izz= "1.403e-4" ></inertia>
+      <mass value="0.221"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-y-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="shoulder">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-visual.stl"></mesh>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "1.299e-5" ixy= "5.557e-10" ixz= "-2.973e-10" iyy= "2.323e-5" iyz= "-8.199e-8" izz= "2.227e-5" ></inertia>
+      <mass value="0.036"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="shoulder_to_arm">
+    <visual>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-x-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "6.811e-5" ixy= "-2.299e-10" ixz= "-4.502e-7" iyy= "7.593e-5" iyz= "-1.674e-9" izz= "4.248e-5" ></inertia>
+      <mass value="0.155"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/shoulder-x-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="upper_arm">
+    <visual>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/upper-arm-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "4.171e-3" ixy= "1.333e-7" ixz= "-2.900e-4" iyy= "4.276e-3" iyz= "1.465e-6" izz= "3.177e-4" ></inertia>
+      <mass value="0.430"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/upper-arm-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="forearm">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/forearm-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "1.724e-4" ixy= "-1.733e-8" ixz= "1.854e-5" iyy= "1.815e-4" iyz= "-4.191e-8" izz= "9.299e-5" ></inertia>
+      <mass value="0.129"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/forearm-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="wrist">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/wrist-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "2.215e-4" ixy= "-2.163e-8" ixz= "-4.702e-6" iyy= "2.306e-4" iyz= "-6.577e-7" izz= "5.075e-5" ></inertia>
+      <mass value="0.115"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/wrist-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="wrist_hand">
+    <visual>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/wrist-hand-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "3.861e-6" ixy= "-2.805e-9" ixz= "-8.067e-8" iyy= "3.694e-6" iyz= "-7.689e-8" izz= "4.987e-6" ></inertia>
+      <mass value="0.009"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/wrist-hand-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="hand_ball">
+    <visual>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/ball-tip-visual.stl"></mesh>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <inertia ixx= "4.177e-5" ixy= "2.340e-9" ixz= "3.492e-8" iyy= "4.290e-5" iyz= "-2.318e-11" izz= "3.596e-5" ></inertia>
+      <mass value="0.090"></mass>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"></origin>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/ball-tip-respondable.stl"></mesh>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="kinect">
+    <inertial>
+      <mass value="1e-5"/>
+      <origin rpy="0 0 0" xyz="0.1 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.1 0 0"/>
+      <geometry>
+        <mesh filename="package://reachy_vel_description/meshes/kinect.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.1 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="kinect_hand" type="fixed">
+    <parent link="hand_ball"/>
+    <child link="kinect"/>0"/>
+    <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
+  </joint>
+
+
+<!--   <link name="ball">
+    <visual>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="red"/>
+    </visual>
+  </link> -->
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base"/>0"/>
+    <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
+  </joint>
+
+  <joint name="shoulder_pitch" type="revolute">
+    <parent link="base"/>
+    <child link="shoulder"/>
+    <origin rpy="0 0 0" xyz="0 -0.04 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="3" lower="-1.5708" upper="3.14159" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="shoulder_pitch_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="shoulder_pitch">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="shoulder_pitch_motor">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>    
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <gazebo reference="shoulder_pitch">
+    <erp>0.1</erp>
+    <stopKd value="100000000.0" />
+    <stopKp value="100000000.0" />
+    <fudgeFactor value="0.5" />
+  </gazebo>
+
+  <joint name="shoulder_roll" type="revolute">
+    <parent link="shoulder"/>
+    <child link="shoulder_to_arm"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="3" lower="-3.14159" upper="0.174533" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="shoulder_roll_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="shoulder_roll">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="shoulder_roll_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <joint name="arm_yaw" type="revolute">
+    <parent link="shoulder_to_arm"/>
+    <child link="upper_arm"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="3" lower="-1.5708" upper="1.5708" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="arm_yaw_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_yaw">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_yaw_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>  
+
+  <joint name="elbow_pitch" type="revolute">
+    <parent link="upper_arm"/>
+    <child link="forearm"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.30745"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="3" lower="-2.18166" upper="0" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="elbow_pitch_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="elbow_pitch">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="elbow_pitch_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>    
+
+  <joint name="forearm_yaw" type="revolute">
+    <parent link="forearm"/>
+    <child link="wrist"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="3" lower="-2.61799" upper="2.61799" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="forearm_yaw_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="forearm_yaw">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="forearm_yaw_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>      
+
+  <joint name="wrist_pitch" type="revolute">
+    <parent link="wrist"/>
+    <child link="wrist_hand"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.22425"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="3" lower="-1.22173" upper="1.22173" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="wrist_pitch_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_pitch">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wrist_pitch_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>  
+
+  <joint name="wrist_roll" type="revolute">
+    <parent link="wrist_hand"/>
+    <child link="hand_ball"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.03243"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="3" lower="-1.0472" upper="1.0472" velocity="1.178465545"/>
+  </joint>
+
+  <transmission name="wrist_roll_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_roll">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="wrist_roll_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>  
+
+</robot>

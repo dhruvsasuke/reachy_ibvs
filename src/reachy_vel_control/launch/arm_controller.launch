@@ -1,0 +1,15 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find reachy_vel_control)/config/config.yaml" command="load"/>
+
+  <param name="robot_description" command="cat $(find reachy_vel_description)/urdf/reachy.urdf" />
+
+  <!-- Spawn some controllers stopped/started -->
+  <node name="controller_spawner" pkg="controller_manager" ns="/reachy" type="spawner" args="joint_state_controller shoulder_pitch_velocity_controller shoulder_roll_velocity_controller arm_yaw_velocity_controller elbow_pitch_velocity_controller forearm_yaw_velocity_controller wrist_pitch_velocity_controller wrist_roll_velocity_controller" output="screen"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+  </node>
+
+</launch>

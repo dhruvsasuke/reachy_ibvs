@@ -1,0 +1,8 @@
+prefix=/home/dhruv/reachy_vel/devel
+
+Name: reachy_vel_moveit1
+Description: Description of reachy_vel_moveit1
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: message_runtime
