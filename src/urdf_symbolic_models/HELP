@@ -1,0 +1,10 @@
+load URDF to parameter server
+
+1.roslaunch reachy_vel_description robotUrdfPserv.launch model_urdf:={filename.urdf}
+
+# if not present # 
+create "symbolic_output" folder in urdf_symbolic_models package
+
+2.rosrun symbolic_models sym_kinematics.py -r "base" -t "hand_ball"
+
+#export MPMATH_NOGMPY=1
