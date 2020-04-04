@@ -14,9 +14,14 @@ import math
 
 jac_array = np.zeros(42)
 jac = np.zeros((6,7))
+
 vel_ee = np.zeros(6)
+vel_ee[1] = 0.01
+
 vel_joints = np.zeros(7)
 joint_states = np.zeros(7)
+
+
 centre_red = (0,0)
 centre_green = (0,0)
 centre_yellow = (0,0)
@@ -57,12 +62,13 @@ pub7 = rospy.Publisher("/reachy/wrist_roll_velocity_controller/command", Float64
 
 
 def Jacobian_Callback(data):
-    global jac_array, jac, joint_states, vel_ee
+    global jac_array, jac, joint_states, vel_ee, vel_joints
+    global pub1, pub2, pub3, pub4, pub5, pub6, pub7
     jac_array = np.asarray(data.data)
     jac = jac_array.reshape((6,7))
     jac_inverse = np.linalg.pinv(jac)
     vel_joints = np.matmul(jac_inverse, vel_ee)
-    # print(joint_states)
+    print(jac_inverse, vel_joints)
     # print(vel_joints)
 
     pub1.publish(vel_joints[0])
@@ -82,7 +88,7 @@ def Joint_State_Callback(data):
 
 
 def update_interaction_matrix():
-    global Lc
+    global Lc, curr_features
     fl = 530
     j=0
     for i in range(4):
