@@ -1,4 +1,4 @@
-<launch>
+  <launch>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find reachy_vel_control)/config/config.yaml" command="load"/>

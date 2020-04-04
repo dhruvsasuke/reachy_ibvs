@@ -130,6 +130,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/dhruv/reachy_vel/build/reachy_vel_description/cmake_install.cmake")
   include("/home/dhruv/reachy_vel/build/reachy_vel_gazebo/cmake_install.cmake")
   include("/home/dhruv/reachy_vel/build/reachy_vel_moveit/cmake_install.cmake")
+  include("/home/dhruv/reachy_vel/build/urdf_symbolic_models/cmake_install.cmake")
 
 endif()
 

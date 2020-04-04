@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/dhruv/reachy_vel/src/reachy_vel_moveit/src/Jacobians_base_hand_ball.cpp
+
+/home/dhruv/reachy_vel/src/reachy_vel_moveit/src/Jacobians_base_hand_ball.h
+
 /home/dhruv/reachy_vel/src/reachy_vel_moveit/src/jacobian.cpp
 ros/ros.h
 -
@@ -21,6 +25,10 @@ std_msgs/Float64.h
 -
 eigen_conversions/eigen_msg.h
 -
+Jacobians_base_hand_ball.h
+/home/dhruv/reachy_vel/src/reachy_vel_moveit/src/Jacobians_base_hand_ball.h
+Jacobians_base_hand_ball.cpp
+/home/dhruv/reachy_vel/src/reachy_vel_moveit/src/Jacobians_base_hand_ball.cpp
 
 /opt/ros/kinetic/include/eigen_conversions/eigen_msg.h
 std_msgs/Float64MultiArray.h

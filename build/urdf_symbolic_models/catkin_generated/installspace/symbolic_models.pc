@@ -1,0 +1,8 @@
+prefix=/home/dhruv/reachy_vel/install
+
+Name: symbolic_models
+Description: Description of symbolic_models
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

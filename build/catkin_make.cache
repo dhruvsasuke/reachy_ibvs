@@ -1,2 +1,2 @@
-reachy_vel_control:reachy_vel_description:reachy_vel_gazebo:reachy_vel_moveit
+reachy_vel_control:reachy_vel_description:reachy_vel_gazebo:reachy_vel_moveit:urdf_symbolic_models
 -DCATKIN_DEVEL_PREFIX=/home/dhruv/reachy_vel/devel -DCMAKE_INSTALL_PREFIX=/home/dhruv/reachy_vel/install -G Unix Makefiles
