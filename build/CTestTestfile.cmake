@@ -6,7 +6,7 @@
 # testing this directory and lists subdirectories to be tested as well.
 subdirs(gtest)
 subdirs(reachy_vel_control)
-subdirs(reachy_vel_description)
 subdirs(reachy_vel_gazebo)
+subdirs(reachy_vel_description)
 subdirs(reachy_vel_moveit)
 subdirs(urdf_symbolic_models)

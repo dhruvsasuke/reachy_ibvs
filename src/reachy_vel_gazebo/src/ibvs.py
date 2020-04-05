@@ -16,7 +16,7 @@ jac_array = np.zeros(42)
 jac = np.zeros((6,7))
 
 vel_ee = np.zeros(6)
-vel_ee[1] = 0.01
+vel_ee[2] = -0.01
 
 vel_joints = np.zeros(7)
 joint_states = np.zeros(7)
@@ -216,7 +216,7 @@ def get_image():
 def main():
     global jac
     get_jacobian()
-    get_image()
+    # get_image()
     rospy.spin()
 
 

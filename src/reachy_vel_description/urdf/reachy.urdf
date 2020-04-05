@@ -235,13 +235,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
       <geometry>
+        <!-- <box size="0.1 0.1 0.1"/> -->
         <mesh filename="package://reachy_vel_description/meshes/kinect.dae"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
       <geometry>
-        <box size="0.1 0.1 0.1"/>
+        <mesh filename="package://reachy_vel_description/meshes/kinect.dae"/>
       </geometry>
     </collision>
   </link>
