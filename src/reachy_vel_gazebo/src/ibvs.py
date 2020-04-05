@@ -7,16 +7,21 @@ from std_msgs.msg import Float64MultiArray
 from std_msgs.msg import Float64
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import JointState
+from geometry_msgs.msg import Transform, TransformStamped
 from PIL import Image as pil_img
 from cv_bridge import CvBridge
 import cv2
 import math
+import tf
 
 jac_array = np.zeros(42)
 jac = np.zeros((6,7))
+trans_matrix = np.zeros((4,4))
+
 
 vel_ee = np.zeros(6)
-vel_ee[2] = -0.01
+vel_cam = np.zeros(6)
+# vel_ee[2] = -0.01
 
 vel_joints = np.zeros(7)
 joint_states = np.zeros(7)
@@ -68,7 +73,7 @@ def Jacobian_Callback(data):
     jac = jac_array.reshape((6,7))
     jac_inverse = np.linalg.pinv(jac)
     vel_joints = np.matmul(jac_inverse, vel_ee)
-    print(jac_inverse, vel_joints)
+    # print(jac_inverse, vel_joints)
     # print(vel_joints)
 
     pub1.publish(vel_joints[0])
@@ -86,6 +91,26 @@ def Joint_State_Callback(data):
     # print(joint_states)
 
 
+def camera_to_base():
+    global trans_matrix, vel_cam, vel_ee
+    vel_ee = np.concatenate(((np.matmul(trans_matrix[:-1, :-1], vel_cam[:3])), np.matmul(trans_matrix[:-1, :-1], vel_cam[-3:])), axis=None)
+    print(vel_ee)
+
+
+
+
+def Transform_Callback(data):
+    global trans_matrix
+    trans = tf.TransformerROS(True, rospy.Duration(10.0))
+    # trans_stamped = TransformStamped()
+    # trans_stamped.transform = data
+    # trans_stamped.child_frame_id = "hand_ball"
+    # trans_stamped.header.frame_id = "base"
+    # trans.setTransform(trans_stamped)
+    trans_matrix = trans.fromTranslationRotation((data.translation.x, data.translation.y, data.translation.z), (data.rotation.x, data.rotation.y, data.rotation.z, data.rotation.w))
+    # print(trans_matrix)
+    camera_to_base()
+
 
 def update_interaction_matrix():
     global Lc, curr_features
@@ -94,8 +119,8 @@ def update_interaction_matrix():
     for i in range(4):
         u = curr_features[i,0]
         v = curr_features[i,1]
-        z = curr_features[i,2]
-        # z = 1
+        # z = curr_features[i,2]
+        z = 1
         Lc[j:j+2,:] = np.array([ [-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v],
                                  [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]   ])
         j=j+2
@@ -103,7 +128,7 @@ def update_interaction_matrix():
     # print ("\n")
 
 def update_joint_velocity():
-    global Lc, vel_ee, error
+    global Lc, vel_cam, error
     update_interaction_matrix()
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
     # print(math.sqrt(np.sum(np.square(error))))
@@ -112,7 +137,8 @@ def update_joint_velocity():
     K = 0.2
     # print(shape(L_inverse))
     # print(shape(error))
-    vel_ee = -K * np.matmul(L_inverse, error)
+    vel_cam = -K * np.matmul(L_inverse, error)
+    camera_to_base()
     # print(vel_ee)
 
 
@@ -180,8 +206,6 @@ def Img_RGB_Callback(rgb_data):
     print(curr_features, math.sqrt(np.sum(np.square(error))))
 
     update_joint_velocity()
-
-
     cv2.waitKey(1)
 
 def Image_Depth_Callback(depth_data):
@@ -209,6 +233,9 @@ def get_jacobian():
     rospy.Subscriber("/reachy/joint_states", JointState, Joint_State_Callback)
     rospy.Subscriber("/jacobian_topic", Float64MultiArray, Jacobian_Callback)
 
+def get_transform():
+    rospy.Subscriber("/transform_topic", Transform, Transform_Callback)
+
 def get_image():
     rospy.Subscriber("/camera/rgb/image_raw", Image, Img_RGB_Callback)
     rospy.Subscriber("/camera/depth/image_raw", Image, Image_Depth_Callback)
@@ -216,9 +243,9 @@ def get_image():
 def main():
     global jac
     get_jacobian()
-    # get_image()
+    get_image()
+    get_transform()
     rospy.spin()
-
 
 if __name__=='__main__':
     main()
