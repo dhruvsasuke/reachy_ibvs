@@ -21,7 +21,7 @@ trans_matrix = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
 vel_cam = np.zeros(6)
-# vel_ee[2] = -0.01
+vel_ee[1] = 0.002
 
 vel_joints = np.zeros(7)
 joint_states = np.zeros(7)
@@ -102,11 +102,6 @@ def camera_to_base():
 def Transform_Callback(data):
     global trans_matrix
     trans = tf.TransformerROS(True, rospy.Duration(10.0))
-    # trans_stamped = TransformStamped()
-    # trans_stamped.transform = data
-    # trans_stamped.child_frame_id = "hand_ball"
-    # trans_stamped.header.frame_id = "base"
-    # trans.setTransform(trans_stamped)
     trans_matrix = trans.fromTranslationRotation((data.translation.x, data.translation.y, data.translation.z), (data.rotation.x, data.rotation.y, data.rotation.z, data.rotation.w))
     # print(trans_matrix)
     camera_to_base()
@@ -152,6 +147,8 @@ def Img_RGB_Callback(rgb_data):
     rgb_img = bridge.imgmsg_to_cv2(rgb_data, desired_encoding='bgr8')
     hsv_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
 
+#################################### Extracting Features ################################################
+
     red_mask = cv2.inRange(hsv_img, red_lower, red_upper)
     red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_OPEN, kernal)
     (_, cnts_red, _) =cv2.findContours (red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-3:]
@@ -192,9 +189,11 @@ def Img_RGB_Callback(rgb_data):
     cnt_yellow = sorted_cnts_yellow[0]
     moments_yellow = cv2.moments(cnt_yellow)
     centre_yellow = (int(moments_yellow['m10'] / moments_yellow['m00']), int(moments_yellow['m01'] / moments_yellow['m00']))
-    
+
     curr_features[3][0] = centre_yellow[0]
     curr_features[3][1] = centre_yellow[1]    
+
+#################################### Extracting Features ################################################
 
     cv2.circle(rgb_img, (int(des_features[0][0]),int(des_features[0][1])), 5, (255, 0, 255), -1)
     cv2.circle(rgb_img, (int(des_features[1][0]),int(des_features[1][1])), 5, (255, 0, 255), -1)
@@ -202,11 +201,9 @@ def Img_RGB_Callback(rgb_data):
     cv2.circle(rgb_img, (int(des_features[3][0]),int(des_features[3][1])), 5, (255, 0, 255), -1)
     cv2.imshow("sample", rgb_img)
 
-    # print(curr_features)
     print(curr_features, math.sqrt(np.sum(np.square(error))))
-
-    update_joint_velocity()
     cv2.waitKey(1)
+    update_joint_velocity()
 
 def Image_Depth_Callback(depth_data):
     # print("depth")
@@ -243,8 +240,8 @@ def get_image():
 def main():
     global jac
     get_jacobian()
-    get_image()
-    get_transform()
+    # get_image()
+    # get_transform()
     rospy.spin()
 
 if __name__=='__main__':
