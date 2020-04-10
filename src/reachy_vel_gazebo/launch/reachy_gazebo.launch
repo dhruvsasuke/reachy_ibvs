@@ -3,9 +3,11 @@
    <param name="robot_description" textfile="$(find reachy_vel_description)/urdf/reachy.urdf" />  
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find reachy_vel_gazebo)/worlds/reachy.world"/>    
+    <arg name="world_name" value="$(find reachy_vel_gazebo)/worlds/reachy1.world"/>    
   </include>
   
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find reachy_vel_description)/urdf/reachy.urdf -urdf -model reachy -z 0.8" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" 
+      args="-file $(find reachy_vel_description)/urdf/reachy.urdf -urdf -model reachy -z 0.8"
+   />
 
 </launch>

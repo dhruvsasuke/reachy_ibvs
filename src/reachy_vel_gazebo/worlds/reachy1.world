@@ -21,7 +21,7 @@
 
   
 	  <model name="box1">
-      <pose>0.60 -0.05 0.55 0 0 0</pose>
+      <pose>0.58 -0.05 0.55 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -43,7 +43,7 @@
 
 
     <model name="box2">
-      <pose>0.60 0.05 0.55 0 0 0</pose>
+      <pose>0.58 0.05 0.55 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -65,7 +65,7 @@
 
 
     <model name="box3">
-      <pose>0.60 0.05 0.65 0 0 0</pose>
+      <pose>0.55 0.05 0.65 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -87,7 +87,7 @@
 
 
     <model name="box4">
-      <pose>0.60 -0.05 0.65 0 0 0</pose>
+      <pose>0.55 -0.05 0.65 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -106,16 +106,14 @@
       </link>
 
     </model>
-
-  </world>
-
-  <!-- <model name="box_wall">
-    <pose>0 0.0 0 0 0 0</pose>
+        <model name="box_wall">
+      <pose>0.8 0.0 0 0 0 0</pose>
       <link name="link">
+
         <visual name="visual">
           <geometry>
 	            <box>
-                <size>1 1 1</size>
+                <size>.02 1.6 5</size>
               </box>
           </geometry>
 	 <material>
@@ -127,6 +125,26 @@
         </visual>
       </link>
 
-    </model> -->
-  
+    </model>
+     <model name="box_wall2">
+      <pose>0 0.8 0 0 0 0</pose>
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+	            <box>
+                <size>1.6 0.02 5</size>
+              </box>
+          </geometry>
+	 <material>
+	   <script>
+	     <name>Gazebo/Grey</name>
+	     <uri>file://media/materials/scripts/gazebo.material</uri>
+	   </script>
+	 </material>
+        </visual>
+      </link>
+
+    </model>
+  </world>
 </sdf>

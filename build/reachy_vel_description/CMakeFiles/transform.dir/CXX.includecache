@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_hand_ball.cpp
+/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_wrist_hand.cpp
 
-/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_hand_ball.h
+/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_wrist_hand.h
 
 /home/dhruv/reachy_vel/src/reachy_vel_description/src/transform.cpp
 ros/ros.h
@@ -19,10 +19,10 @@ sensor_msgs/JointState.h
 -
 eigen_conversions/eigen_msg.h
 -
-Transforms_base_hand_ball.h
-/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_hand_ball.h
-Transforms_base_hand_ball.cpp
-/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_hand_ball.cpp
+Transforms_base_wrist_hand.h
+/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_wrist_hand.h
+Transforms_base_wrist_hand.cpp
+/home/dhruv/reachy_vel/src/reachy_vel_description/src/Transforms_base_wrist_hand.cpp
 
 /opt/ros/kinetic/include/eigen_conversions/eigen_msg.h
 std_msgs/Float64MultiArray.h

@@ -384,7 +384,7 @@
     <actuator name="wrist_pitch_motor">
       <mechanicalReduction>1.0</mechanicalReduction>
     </actuator>
-  </transmission>  
+  </transmission>   
 
   <!-- <joint name="wrist_roll" type="fixed">
     <parent link="wrist_hand"/>
