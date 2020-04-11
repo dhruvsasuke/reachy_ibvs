@@ -206,7 +206,7 @@
     </collision>
   </link>
 
-  <link name="hand_ball">
+  <!-- <link name="hand_ball">
     <visual>
       <geometry>
         <mesh filename="package://reachy_vel_description/meshes/ball-tip-visual.stl"></mesh>
@@ -224,7 +224,7 @@
         <mesh filename="package://reachy_vel_description/meshes/ball-tip-respondable.stl"></mesh>
       </geometry>
     </collision>
-  </link>
+  </link> -->
 
   <link name="kinect">
     <inertial>
@@ -235,19 +235,20 @@
     <visual>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
       <geometry>
+        <!-- <box size="0.1 0.1 0.1"/> -->
         <mesh filename="package://reachy_vel_description/meshes/kinect.dae"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
       <geometry>
-        <box size="0.1 0.1 0.1"/>
+        <mesh filename="package://reachy_vel_description/meshes/kinect.dae"/>
       </geometry>
     </collision>
   </link>
 
   <joint name="kinect_hand" type="fixed">
-    <parent link="hand_ball"/>
+    <parent link="wrist_hand"/>
     <child link="kinect"/>0"/>
     <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
   </joint>
@@ -385,15 +386,15 @@
     </actuator>
   </transmission>  
 
-  <joint name="wrist_roll" type="revolute">
+  <!-- <joint name="wrist_roll" type="fixed">
     <parent link="wrist_hand"/>
     <child link="hand_ball"/>
     <origin rpy="0 0 0" xyz="0 0 -0.03243"/>
-    <axis xyz="1 0 0"/>
+    <axis xyz="1 0 0"/> 
     <limit effort="3" lower="-1.0472" upper="1.0472" velocity="1.178465545"/>
-  </joint>
+  </joint> -->
 
-  <transmission name="wrist_roll_trans">
+  <!-- <transmission name="wrist_roll_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="wrist_roll">
       <hardwareInterface>VelocityJointInterface</hardwareInterface>
@@ -401,6 +402,6 @@
     <actuator name="wrist_roll_motor">
       <mechanicalReduction>1.0</mechanicalReduction>
     </actuator>
-  </transmission>  
+  </transmission>   -->
 
 </robot>

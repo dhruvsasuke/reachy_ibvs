@@ -7,9 +7,9 @@
 #include <eigen_conversions/eigen_msg.h>
 #include "Jacobians_base_hand_ball.h"
 #include "Jacobians_base_hand_ball.cpp"
-
-
-std::vector<double> joint_values(7);
+#include "Jacobians_base_wrist_hand.h"
+#include "Jacobians_base_wrist_hand.h"
+std::vector<double> joint_values(6);
 Eigen::Matrix<double,6,7> jacobian;
 
 void Callback(const sensor_msgs::JointState &msg){
@@ -31,7 +31,7 @@ int main(int argc, char** argv){
   while(ros::ok()){
 
     data.data.clear();
-    getJacobianBaseHand_ball(joint_values,jacobian);    
+    getJacobianBaseWrist_hand(joint_values,jacobian);    
     std_msgs::Float64MultiArray data;
     tf::matrixEigenToMsg(jacobian, data);
     pub.publish(data);

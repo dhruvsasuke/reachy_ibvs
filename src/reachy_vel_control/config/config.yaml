@@ -34,8 +34,4 @@ reachy:
     joint: wrist_pitch
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
-  wrist_roll_velocity_controller:
-    type: velocity_controllers/JointVelocityController
-    joint: wrist_roll
-    pid: {p: 100.0, i: 0.01, d: 10.0}
  
