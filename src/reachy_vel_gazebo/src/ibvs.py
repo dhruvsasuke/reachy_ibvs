@@ -16,12 +16,11 @@ import tf
 import feature_extract
 import jacobian_function
 
-
 jac_inverse = np.zeros((6,6))
 trans_matrix = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
-vel_ee[1] = 0.005 
+vel_ee[0] = 0.005 
 
 vel_joints = np.zeros(6)
 joint_states = np.zeros(6)
@@ -77,8 +76,18 @@ def update_ee_velocity(Lc, error):
     L_inverse = np.linalg.pinv(Lc)
     K = 0.01
     vel_ee = -K * np.matmul(L_inverse, error)
-    # vel_ee[1] = -vel_ee[1]
+    # vel_ee[:3] = -vel_ee[:3]
+    # Joint Velocity Update
     vel_joints = np.matmul(jac_inverse, vel_ee)
+
+def init():
+    global pub1, pub2, pub3, pub4, pub5, pub6
+    start = time.time()
+    while ((time.time() - start)<12):
+        pub1.publish(0.05)
+        pub4.publish(-0.07)
+    pub1.publish(0.0)
+    pub4.publish(0.0)
 
 ##################################### Callbacks ###############################################
 
@@ -141,7 +150,6 @@ def Joint_State_Callback(data):
 ##################################### Callbacks ###############################################
 
 def get_jacobian():
-    rospy.init_node("ibvs", anonymous="True")
     rospy.Subscriber("/reachy/joint_states", JointState, Joint_State_Callback)
 
 def get_image():
@@ -150,6 +158,8 @@ def get_image():
 
 def main():
     global jac_inverse
+    rospy.init_node("ibvs", anonymous="True")    
+    # init()
     get_jacobian()
     get_image()
     rospy.spin()

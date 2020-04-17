@@ -229,7 +229,7 @@
   <link name="kinect">
     <inertial>
       <mass value="1e-5"/>
-      <origin rpy="0 0 0" xyz="0.1 0 0"/>
+      <origin rpy="0 0 1" xyz="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
     <visual>
@@ -249,7 +249,8 @@
 
   <joint name="kinect_hand" type="fixed">
     <parent link="wrist_hand"/>
-    <child link="kinect"/>0"/>
+    <child link="kinect"/>
+    <axis xyz="0.0 1.0 0.0"/>
     <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
   </joint>
 
