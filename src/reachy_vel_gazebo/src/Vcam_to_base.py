@@ -19,7 +19,7 @@ d6 = 0
 
 d = np.array([l0+l1,0,-(l2+l3),0,-(l4+l5),0])
 a = np.array([0,0,0,0,0,0])
-alp = np.array([3.142/2, 3.142/2, 3.142/2, 3.142/2, -3.142/2, 3.142/2])
+alp = np.array([m.pi/2, m.pi/2, m.pi/2, m.pi/2, -m.pi/2, m.pi/2])
 
 def Vc_2_Base(Vcamera,th):
     i1 = 0
