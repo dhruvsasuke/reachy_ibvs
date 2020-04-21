@@ -20,7 +20,9 @@ jac_inverse = np.zeros((6,6))
 trans_matrix = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
-vel_ee[0] = 0.005 
+# vel_ee[0] = 0.005 
+
+vel_cam = np.zeros(6)
 
 vel_joints = np.zeros(6)
 joint_states = np.zeros(6)
@@ -68,23 +70,30 @@ def update_interaction_matrix(curr_features):
         # z = 1
         Lc[j:j+2,:] = np.array([[-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v], [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]])
         j=j+2
-    update_ee_velocity(Lc, error)
+    update_cam_velocity(Lc, error)
 
 
-def update_ee_velocity(Lc, error):
-    global vel_ee, vel_joints, jac_inverse
+def update_cam_velocity(Lc, error):
+    global vel_cam, vel_ee, vel_joints, jac_inverse
     L_inverse = np.linalg.pinv(Lc)
-    K = 0.01
-    vel_ee = -K * np.matmul(L_inverse, error)
-    # vel_ee[:3] = -vel_ee[:3]
+    K = 0.005
+    vel_cam = -K * np.matmul(L_inverse, error)
+    vel_ee[0] = vel_cam[0]
+    vel_ee[1] = vel_cam[2]
+    vel_ee[2] = vel_cam[1]
+    vel_ee[3] = vel_cam[3]
+    vel_ee[4] = vel_cam[5]
+    vel_ee[5] = vel_cam[4]
     # Joint Velocity Update
     vel_joints = np.matmul(jac_inverse, vel_ee)
+    print(vel_joints, vel_ee)
 
 def init():
     global pub1, pub2, pub3, pub4, pub5, pub6
     start = time.time()
     while ((time.time() - start)<12):
         pub1.publish(0.05)
+        pub2.publish(-0.0154)
         pub4.publish(-0.07)
     pub1.publish(0.0)
     pub4.publish(0.0)
@@ -121,7 +130,7 @@ def Img_RGB_Callback(rgb_data):
     cv2.waitKey(1)
 
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
-    print(curr_features, math.sqrt(np.sum(np.square(error))))
+    # print(curr_features, math.sqrt(np.sum(np.square(error))))
     update_interaction_matrix(curr_features)
     publish_joint_velocity(vel_joints)
 
@@ -159,7 +168,7 @@ def get_image():
 def main():
     global jac_inverse
     rospy.init_node("ibvs", anonymous="True")    
-    # init()
+    init()
     get_jacobian()
     get_image()
     rospy.spin()

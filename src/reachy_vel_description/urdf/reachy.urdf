@@ -250,7 +250,7 @@
   <joint name="kinect_hand" type="fixed">
     <parent link="wrist_hand"/>
     <child link="kinect"/>
-    <axis xyz="0.0 1.0 0.0"/>
+    <axis xyz="0 0 1"/>
     <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
   </joint>
 
