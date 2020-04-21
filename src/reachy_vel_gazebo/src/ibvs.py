@@ -15,13 +15,12 @@ import math
 import tf
 import feature_extract
 import jacobian_function
-import Vcam_to_base
 
 jac_inverse = np.zeros((6,6))
 trans_matrix = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
-vel_ee[1] = 0.005 
+vel_ee[0] = 0.005 
 
 vel_joints = np.zeros(6)
 joint_states = np.zeros(6)
@@ -47,27 +46,6 @@ pub4 = rospy.Publisher("/reachy/elbow_pitch_velocity_controller/command", Float6
 pub5 = rospy.Publisher("/reachy/forearm_yaw_velocity_controller/command", Float64, queue_size=10)
 pub6 = rospy.Publisher("/reachy/wrist_pitch_velocity_controller/command", Float64, queue_size=10)    
 
-def ini():
-    global pub1, pub2, pub3, pub4, pub5, pub6
-    print ("starting to initiate")
-    rospy.sleep(3)
-    pub1.publish(0.2)
-    rospy.sleep(3.5)
-    pub1.publish(0)
-    pub4.publish(-0.4)
-    rospy.sleep(2)
-    pub4.publish(0)
-    pub6.publish(0.4)
-    rospy.sleep(1)
-    pub6.publish(0)
-    pub5.publish(0.4)
-    rospy.sleep(1)
-    pub5.publish(0)
-    pub3.publish(-0.4)
-    rospy.sleep(1)
-    pub3.publish(0)
-    print ("Done")
-    rospy.sleep(2)
 
 def publish_joint_velocity(vel_joints):
     global pub1, pub2, pub3, pub4, pub5, pub6
@@ -76,15 +54,12 @@ def publish_joint_velocity(vel_joints):
     pub3.publish(vel_joints[2])
     pub4.publish(vel_joints[3])
     pub5.publish(vel_joints[4])
-
     pub6.publish(vel_joints[5])
-    rospy.sleep(0.001)
-    #print(vel_joints)
 
 
 def update_interaction_matrix(curr_features):
     global Lc, error
-    fl = 531.15
+    fl = 530
     j=0
     for i in range(4):
         u = curr_features[i,0]
@@ -93,28 +68,26 @@ def update_interaction_matrix(curr_features):
         # z = 1
         Lc[j:j+2,:] = np.array([[-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v], [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]])
         j=j+2
-    update_ee_velocity(Lc)
+    update_ee_velocity(Lc, error)
 
 
-def update_ee_velocity(Lc):
-    global vel_ee, vel_joints, jac_inverse,joint_states,error
+def update_ee_velocity(Lc, error):
+    global vel_ee, vel_joints, jac_inverse
     L_inverse = np.linalg.pinv(Lc)
-    K = 0.1
+    K = 0.01
     vel_ee = -K * np.matmul(L_inverse, error)
-    #print(error)
-    #vel_ee[1] = -vel_ee[1]
-
-    #vel_ee[[0,2]]=vel_ee[[2,0]]
-    #vel_ee[0]= -vel_ee[0]
-    #vel_ee[1]= -vel_ee[1]
-    #vel_ee[2]= -vel_ee[2]
-    #vel_ee[[3,5]]=vel_ee[[5,3]]
-    #vel_ee[3]= -vel_ee[3]
-    #vel_ee=[[0.1],[0],[0],[0],[0],[0]]
-    
-    print(vel_ee)
+    # vel_ee[:3] = -vel_ee[:3]
+    # Joint Velocity Update
     vel_joints = np.matmul(jac_inverse, vel_ee)
-    print (vel_joints)
+
+def init():
+    global pub1, pub2, pub3, pub4, pub5, pub6
+    start = time.time()
+    while ((time.time() - start)<12):
+        pub1.publish(0.05)
+        pub4.publish(-0.07)
+    pub1.publish(0.0)
+    pub4.publish(0.0)
 
 ##################################### Callbacks ###############################################
 
@@ -148,7 +121,7 @@ def Img_RGB_Callback(rgb_data):
     cv2.waitKey(1)
 
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
-    #print(curr_features, math.sqrt(np.sum(np.square(error))))
+    print(curr_features, math.sqrt(np.sum(np.square(error))))
     update_interaction_matrix(curr_features)
     publish_joint_velocity(vel_joints)
 
@@ -185,11 +158,11 @@ def get_image():
 
 def main():
     global jac_inverse
+    rospy.init_node("ibvs", anonymous="True")    
+    # init()
     get_jacobian()
     get_image()
     rospy.spin()
 
 if __name__=='__main__':
-    rospy.init_node("ibvs", anonymous="True")
-    #ini()
     main()

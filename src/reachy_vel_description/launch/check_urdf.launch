@@ -1,5 +1,5 @@
 <launch>
-  <arg name="model" default="/home/siddhant/reachy_ibvs/src/reachy_vel_description/urdf/reachy.urdf"/>
+  <arg name="model" default="/home/dhruv/reachy_vel/src/reachy_vel_description/urdf/reachy.urdf"/>
   
   <param name="robot_description" command="cat $(arg model)"/>
   

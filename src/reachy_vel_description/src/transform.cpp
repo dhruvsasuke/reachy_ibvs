@@ -2,15 +2,15 @@
 #include <geometry_msgs/Transform.h>
 #include <sensor_msgs/JointState.h>
 #include <eigen_conversions/eigen_msg.h>
-#include "Transforms_base_hand_ball.h"
-#include "Transforms_base_hand_ball.cpp"
+#include "Transforms_base_wrist_hand.h"
+#include "Transforms_base_wrist_hand.cpp"
 
-std::vector<double> joint_states(7);
+std::vector<double> joint_states(6);
 Eigen::Transform<double, 3, Eigen::Affine> trans;
 
 void Callback(const sensor_msgs::JointState &msg){
     joint_states = msg.position;
-    getTransformBaseHand_ball(joint_states, trans);
+    getTransformBaseWrist_hand(joint_states, trans);
 }
 
 int main(int argc, char** argv){

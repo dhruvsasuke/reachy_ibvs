@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from math import *
 import math as m
 l0=0
 l1=0.03970

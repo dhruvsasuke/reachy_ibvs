@@ -1,4 +1,4 @@
-void getJacobianBaseShoulder(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseShoulder(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];
@@ -18,7 +18,7 @@ J(5,0)=0;
 }
 
 
-void getJacobianBaseShoulder_to_arm(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseShoulder_to_arm(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];
@@ -44,7 +44,7 @@ J(5,1)=-1.0*sin(shoulder_pitch);
 }
 
 
-void getJacobianBaseUpper_arm(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseUpper_arm(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];
@@ -76,7 +76,7 @@ J(5,2)=1.0*cos(shoulder_pitch)*cos(shoulder_roll);
 }
 
 
-void getJacobianBaseForearm(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseForearm(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];
@@ -92,7 +92,7 @@ J(0,1)=0.30745*sin(shoulder_pitch)*sin(shoulder_roll);
 J(0,2)=0;
 J(0,3)=0;
 J(1,0)=0;
-J(1,1)=0.30745*sin(shoulder_pitch)**2*cos(shoulder_roll) + 0.30745*cos(shoulder_pitch)**2*cos(shoulder_roll);
+J(1,1)=0.30745*(sin(shoulder_pitch)*sin(shoulder_pitch))*cos(shoulder_roll) + 0.30745*(cos(shoulder_pitch)*cos(shoulder_pitch))*cos(shoulder_roll);
 J(1,2)=0;
 J(1,3)=0;
 J(2,0)=0.30745*sin(shoulder_pitch)*cos(shoulder_roll);
@@ -114,7 +114,7 @@ J(5,3)=1.0*sin(arm_yaw)*sin(shoulder_pitch) + 1.0*sin(shoulder_roll)*cos(arm_yaw
 }
 
 
-void getJacobianBaseWrist(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseWrist(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];
@@ -131,7 +131,7 @@ J(0,2)=0;
 J(0,3)=0;
 J(0,4)=0;
 J(1,0)=0;
-J(1,1)=0.30745*sin(shoulder_pitch)**2*cos(shoulder_roll) + 0.30745*cos(shoulder_pitch)**2*cos(shoulder_roll);
+J(1,1)=0.30745*(sin(shoulder_pitch)*sin(shoulder_pitch))*cos(shoulder_roll) + 0.30745*(cos(shoulder_pitch)*cos(shoulder_pitch))*cos(shoulder_roll);
 J(1,2)=0;
 J(1,3)=0;
 J(1,4)=0;
@@ -158,7 +158,7 @@ J(5,4)=1.0*(1.0*sin(arm_yaw)*sin(shoulder_roll)*cos(shoulder_pitch) - 1.0*sin(sh
 }
 
 
-void getJacobianBaseWrist_hand(std::vector<double> q,Eigen::Matrix<double,6,7> &J)
+void getJacobianBaseWrist_hand(std::vector<double> q,Eigen::Matrix<double,6,6> &J)
  { 
  J.setZero(); 
 double shoulder_pitch=q[0];

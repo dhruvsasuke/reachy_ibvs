@@ -5,12 +5,12 @@
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/Float64.h>
 #include <eigen_conversions/eigen_msg.h>
-#include "Jacobians_base_hand_ball.h"
-#include "Jacobians_base_hand_ball.cpp"
 #include "Jacobians_base_wrist_hand.h"
-#include "Jacobians_base_wrist_hand.h"
-std::vector<double> joint_values(6);
-Eigen::Matrix<double,6,7> jacobian;
+#include "Jacobians_base_wrist_hand.cpp"
+
+
+std::vector<double> joint_values(7);
+Eigen::Matrix<double,6,6> jacobian;
 
 void Callback(const sensor_msgs::JointState &msg){
   //std::cout<<"callback \n";
