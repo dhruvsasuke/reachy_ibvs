@@ -20,7 +20,9 @@ jac_inverse = np.zeros((6,6))
 trans_matrix = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
-vel_ee[0] = 0.005 
+# vel_ee[0] = 0.005 
+
+vel_cam = np.zeros(6)
 
 vel_joints = np.zeros(6)
 joint_states = np.zeros(6)
@@ -37,7 +39,7 @@ Lc = np.zeros([8,6])
 error = np.zeros(8)
 
 curr_features = np.zeros((4,3))
-des_features = np.array([[377, 197, 0.68269295], [265, 201, 0.6998713], [259, 79, 0.6990869], [375, 76, 0.68171024]])
+des_features = np.array([[377, 197, 0.3], [265, 201, 0.3], [259, 79, 0.3], [375, 76, 0.3]])
 
 pub1 = rospy.Publisher("/reachy/shoulder_pitch_velocity_controller/command", Float64, queue_size=10)
 pub2 = rospy.Publisher("/reachy/shoulder_roll_velocity_controller/command", Float64, queue_size=10)
@@ -55,11 +57,12 @@ def publish_joint_velocity(vel_joints):
     pub4.publish(vel_joints[3])
     pub5.publish(vel_joints[4])
     pub6.publish(vel_joints[5])
+    #rospy.sleep(0.001)
 
 
 def update_interaction_matrix(curr_features):
     global Lc, error
-    fl = 530
+    fl = 531
     j=0
     for i in range(4):
         u = curr_features[i,0]
@@ -68,26 +71,34 @@ def update_interaction_matrix(curr_features):
         # z = 1
         Lc[j:j+2,:] = np.array([[-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v], [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]])
         j=j+2
-    update_ee_velocity(Lc, error)
+    update_cam_velocity(Lc, error)
 
 
-def update_ee_velocity(Lc, error):
-    global vel_ee, vel_joints, jac_inverse
+def update_cam_velocity(Lc, error):
+    global vel_cam, vel_ee, vel_joints, jac_inverse
     L_inverse = np.linalg.pinv(Lc)
-    K = 0.01
-    vel_ee = -K * np.matmul(L_inverse, error)
-    # vel_ee[:3] = -vel_ee[:3]
+    K = 0.05
+    vel_cam = -K * np.matmul(L_inverse, error)
+    vel_ee[0] = vel_cam[0]
+    vel_ee[1] = vel_cam[2]
+    vel_ee[2] = vel_cam[1]
+    vel_ee[3] = vel_cam[3]
+    vel_ee[4] = vel_cam[5]
+    vel_ee[5] = vel_cam[4]
     # Joint Velocity Update
     vel_joints = np.matmul(jac_inverse, vel_ee)
+    print(vel_joints, vel_ee)
 
 def init():
     global pub1, pub2, pub3, pub4, pub5, pub6
     start = time.time()
-    while ((time.time() - start)<12):
-        pub1.publish(0.05)
-        pub4.publish(-0.07)
+    while ((time.time() - start)<3):
+        pub1.publish(0.5)
+        pub2.publish(-0.154)
+        pub4.publish(-0.7)
     pub1.publish(0.0)
     pub4.publish(0.0)
+    pub2.publish(0.0)
 
 ##################################### Callbacks ###############################################
 
@@ -121,7 +132,7 @@ def Img_RGB_Callback(rgb_data):
     cv2.waitKey(1)
 
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
-    print(curr_features, math.sqrt(np.sum(np.square(error))))
+    # print(curr_features, math.sqrt(np.sum(np.square(error))))
     update_interaction_matrix(curr_features)
     publish_joint_velocity(vel_joints)
 
@@ -157,12 +168,12 @@ def get_image():
     rospy.Subscriber("/camera/depth/image_raw", Image, Image_Depth_Callback)
 
 def main():
-    global jac_inverse
-    rospy.init_node("ibvs", anonymous="True")    
-    # init()
+    global jac_inverse    
     get_jacobian()
     get_image()
     rospy.spin()
 
 if __name__=='__main__':
+    rospy.init_node("ibvs", anonymous="True")
+    init()
     main()

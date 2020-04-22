@@ -1,0 +1,14 @@
+<!DOCTYPE MeshLabDocument>
+<MeshLabProject>
+ <MeshGroup>
+  <MLMesh label="wrist-hand-visual.stl" filename="../../reachy_vel_description/meshes/wrist-hand-visual.stl">
+   <MLMatrix44>
+-0.000896625 -0.999999 0.000590867 0 
+0.999999 -0.000896974 -0.000590337 0 
+0.000590867 0.000590337 0.999999 0 
+0 0 0 1 
+</MLMatrix44>
+  </MLMesh>
+ </MeshGroup>
+ <RasterGroup/>
+</MeshLabProject>
