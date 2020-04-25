@@ -18,7 +18,7 @@ import jacobian_function
 import transform
 
 jac_inverse = np.zeros((6,6))
-trans_matrix = np.zeros((4,4))
+trans = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
 # vel_ee[0] = 0.005 
@@ -76,10 +76,9 @@ def update_interaction_matrix(curr_features):
 
 
 def update_cam_velocity(Lc, error):
-    global vel_cam, vel_ee, vel_joints, jac_inverse
+    global vel_cam, vel_ee, vel_joints, jac_inverse, trans
     L_inverse = np.linalg.pinv(Lc)
     K = 0.002
-    trans = np.zeros((4,4))
     vel_cam = -K * np.matmul(L_inverse, error)
     vel_ee[0] = -vel_cam[0]
     vel_ee[1] = vel_cam[2]
@@ -87,6 +86,8 @@ def update_cam_velocity(Lc, error):
     vel_ee[3] = -vel_cam[3]
     vel_ee[4] = vel_cam[5]
     vel_ee[5] = vel_cam[4]
+
+    # V cmaera to V base conversion
     transform.getTransformBaseWrist_hand(joint_states, trans)
     rot = trans[:-1, :-1]
     vel_lin = vel_ee[:-3]
