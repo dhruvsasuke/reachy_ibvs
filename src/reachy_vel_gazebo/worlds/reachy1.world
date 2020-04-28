@@ -21,7 +21,7 @@
 
   
 	  <model name="box1">
-      <pose>0.58 -0.05 0.55 0 0 0</pose>
+      <pose>1.0 -0.05 0.45 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -43,7 +43,7 @@
 
 
     <model name="box2">
-      <pose>0.58 0.05 0.55 0 0 0</pose>
+      <pose>1.0 0.05 0.45 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -65,7 +65,7 @@
 
 
     <model name="box3">
-      <pose>0.55 0.05 0.65 0 0 0</pose>
+      <pose>1.0 0.05 0.55 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -87,7 +87,7 @@
 
 
     <model name="box4">
-      <pose>0.55 -0.05 0.65 0 0 0</pose>
+      <pose>1.0 -0.05 0.55 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
@@ -107,13 +107,13 @@
 
     </model>
         <model name="box_wall">
-      <pose>0.8 0.0 0 0 0 0</pose>
+      <pose>2.0 0.0 0 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
           <geometry>
 	            <box>
-                <size>.02 1.6 5</size>
+                <size>.02 4 8</size>
               </box>
           </geometry>
 	 <material>
@@ -127,13 +127,13 @@
 
     </model>
      <model name="box_wall2">
-      <pose>0 0.8 0 0 0 0</pose>
+      <pose>0 2.0 0 0 0 0</pose>
       <link name="link">
 
         <visual name="visual">
           <geometry>
 	            <box>
-                <size>1.6 0.02 5</size>
+                <size>4 0.02 8</size>
               </box>
           </geometry>
 	 <material>
