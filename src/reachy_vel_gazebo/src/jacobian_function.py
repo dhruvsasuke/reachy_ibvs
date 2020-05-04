@@ -32,7 +32,7 @@ def calc_jack(th1,th2,th3,th4,th5,th6):
 
     j12=m.cos(th2)*((28*m.sin(th4)*(m.cos(th1)*m.sin(th3) - m.cos(th2)*m.cos(th3)*m.sin(th1)))/125 - (77*m.sin(th1)*m.sin(th2))/250 + (28*m.cos(th4)*m.sin(th1)*m.sin(th2))/125) - m.sin(th1)*m.sin(th2)*((28*m.cos(th2)*m.cos(th4))/125 - (77*m.cos(th2))/250 + (28*m.cos(th3)*m.sin(th2)*m.sin(th4))/125)
  
-    j13=-(m.cos(th1)*m.cos(th3) + m.cos(th2)*m.sin(th1)*m.sin(th3))*((28*m.cos(th2)*m.cos(th4))/125 + (28*m.cos(th3)*m.sin(th2)*m.sin(th4))/125) - m.sin(th2)*m.sin(th3)*((28*m.sin(th4)*(m.cos(th1)*m.sin(th3) - m.cos(th2)*m.cos(th3)*m.sin(th1)))/125 + (28*m.cos(th4)*m.sin(th1)*m.sin(th2))/125)
+    j13=- (m.cos(th1)*m.cos(th3) + m.cos(th2)*m.sin(th1)*m.sin(th3))*((28*m.cos(th2)*m.cos(th4))/125 + (28*m.cos(th3)*m.sin(th2)*m.sin(th4))/125) - m.sin(th2)*m.sin(th3)*((28*m.sin(th4)*(m.cos(th1)*m.sin(th3) - m.cos(th2)*m.cos(th3)*m.sin(th1)))/125 + (28*m.cos(th4)*m.sin(th1)*m.sin(th2))/125)
  
     j14=(m.sin(th4)*(m.cos(th1)*m.sin(th3) - m.cos(th2)*m.cos(th3)*m.sin(th1)) + m.cos(th4)*m.sin(th1)*m.sin(th2))*((28*m.cos(th2)*m.cos(th4))/125 + (28*m.cos(th3)*m.sin(th2)*m.sin(th4))/125) - ((28*m.sin(th4)*(m.cos(th1)*m.sin(th3) - m.cos(th2)*m.cos(th3)*m.sin(th1)))/125 + (28*m.cos(th4)*m.sin(th1)*m.sin(th2))/125)*(m.cos(th2)*m.cos(th4) + m.cos(th3)*m.sin(th2)*m.sin(th4))
  
@@ -112,5 +112,3 @@ def calc_jack(th1,th2,th3,th4,th5,th6):
 
 
     return jacobian
-
-print(calc_jack(0,0,0,0,0,0))

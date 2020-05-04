@@ -5,6 +5,6 @@ load URDF to parameter server
 # if not present # 
 create "symbolic_output" folder in urdf_symbolic_models package
 
-2.rosrun urdf_symbolic_models sym_kinematics.py -r "root/base_link" -t "ee_fixed_joint"
+2.rosrun symbolic_models sym_kinematics.py -r "root/base" -t "tip"
 
 #export MPMATH_NOGMPY=1
