@@ -1,4 +1,4 @@
 <launch>
   <arg name="model_urdf"/>
-  <param name="robot_description" command="cat $(find reachy_description)/urdf/$(arg model_urdf)"/>
+  <param name="robot_description" command="cat $(find ur_description)/urdf/$(arg model_urdf)"/>
 </launch>

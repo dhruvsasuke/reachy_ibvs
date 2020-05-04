@@ -343,8 +343,8 @@ def main(argv):
 
     root_name,tip_name=readArguments(argv)
     robot = URDF.from_parameter_server()
-    file_path=rospkg.RosPack().get_path('symbolic_models')+"/symbolic_output/"
-
+    #file_path=rospkg.RosPack().get_path('urdf_symbolic_models')+"/symbolic_output/"
+    file_path= "/home/siddhant/reachy_ibvs/src/urdf_symbolic_models/symbolic_models"
     desired_joint_chain=robot.get_chain(root=root_name,tip=tip_name,joints=True,links=False)
     desired_link_chain=robot.get_chain(root=root_name,tip=tip_name,joints=False,links=True)
     print desired_joint_chain
