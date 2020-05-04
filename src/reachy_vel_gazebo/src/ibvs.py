@@ -41,7 +41,7 @@ Lc = np.zeros([8,6])
 error = np.zeros(8)
 
 curr_features = np.zeros((4,3))
-des_features = np.array([[220, 237, 0.99563932], [167, 237, 1.00513804], [167, 185, 1.00642538], [219, 185, 0.99724156]])
+des_features = np.array([[225, 246, 2.05193567], [171, 246, 2.07436562], [173, 193, 2.07352567], [225, 193, 2.05193496]])
 
 pub1 = rospy.Publisher("/reachy/shoulder_pitch_velocity_controller/command", Float64, queue_size=10)
 pub2 = rospy.Publisher("/reachy/shoulder_roll_velocity_controller/command", Float64, queue_size=10)
@@ -66,12 +66,16 @@ def update_interaction_matrix(curr_features):
     global Lc, error
     fl = 530
     j=0
+    uc = 320
+    vc = 240
     for i in range(4):
         u = curr_features[i,0]
         v = curr_features[i,1]
         # z = curr_features[i,2]*0.5
         z = 1
-        Lc[j:j+2,:] = np.array([[-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v], [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]])
+        _u = u-uc
+        _v = v-vc
+        Lc[j:j+2,:] = np.array([[-fl/z, 0, _u/z, _u*_v/fl, -(fl*fl+_u*_u)/fl, _v], [0, -fl/z, _v/z, (fl*fl+_v*_v)/fl, -_u*_v/fl, -_u]])
         j=j+2
     update_cam_velocity(Lc, error)
 
@@ -79,24 +83,19 @@ def update_interaction_matrix(curr_features):
 def update_cam_velocity(Lc, error):
     global vel_cam, vel_ee, vel_joints, jac_inverse, trans
     L_inverse = np.linalg.pinv(Lc)
-    K = 0.008
+    K = 0.01
     vel_cam = -K * np.matmul(L_inverse, error)
     print(vel_cam)
     vel_ee = vel_cam
-    vel_ee[0] = vel_cam[2]
-    vel_ee[3] = vel_cam[5]
+    vel_ee[0] = -vel_cam[2]
+    vel_ee[3] = -vel_cam[5]
     vel_ee[2] = vel_cam[0]
-    vel_ee[5] = -vel_cam[3]
-    # vel_ee[0] = -vel_cam[0]
-    # vel_ee[1] = vel_cam[2]
-    # vel_ee[2] = vel_cam[1]
-    # vel_ee[3] = -vel_cam[3]
-    # vel_ee[4] = vel_cam[5]
-    # vel_ee[5] = vel_cam[4]
+    vel_ee[5] = vel_cam[3]
 
     # V cmaera to V base conversion
     transform.getTransformBaseWrist_hand(joint_states, trans)
     rot = trans[:-1, :-1]
+    rot = np.linalg.pinv(rot)
     vel_lin = vel_ee[:-3]
     vel_ang = vel_ee[3:]
     vel_ee = np.concatenate((np.matmul(rot, vel_lin), np.matmul(rot, vel_ang)), axis=None)
