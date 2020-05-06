@@ -1,8 +1,0 @@
-prefix=/home/dhruv/reachy_vel/install
-
-Name: reachy_vel_description
-Description: Description of reachy_vel_description
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: message_runtime eigen
