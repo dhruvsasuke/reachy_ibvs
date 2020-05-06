@@ -15,12 +15,16 @@ import math
 import tf
 import feature_extract
 import jacobian_function
+import transform
 
 jac_inverse = np.zeros((6,6))
-trans_matrix = np.zeros((4,4))
+trans = np.zeros((4,4))
 
 vel_ee = np.zeros(6)
 vel_ee[0] = 0.005 
+
+vel_cam = np.zeros(6)
+# vel_cam[0] = 0.01
 
 vel_joints = np.zeros(6)
 joint_states = np.zeros(6)
@@ -37,7 +41,7 @@ Lc = np.zeros([8,6])
 error = np.zeros(8)
 
 curr_features = np.zeros((4,3))
-des_features = np.array([[377, 197, 0.68269295], [265, 201, 0.6998713], [259, 79, 0.6990869], [375, 76, 0.68171024]])
+des_features = np.array([[225, 246, 2.05193567], [171, 246, 2.07436562], [173, 193, 2.07352567], [225, 193, 2.05193496]])
 
 pub1 = rospy.Publisher("/reachy/shoulder_pitch_velocity_controller/command", Float64, queue_size=10)
 pub2 = rospy.Publisher("/reachy/shoulder_roll_velocity_controller/command", Float64, queue_size=10)
@@ -49,6 +53,7 @@ pub6 = rospy.Publisher("/reachy/wrist_pitch_velocity_controller/command", Float6
 
 def publish_joint_velocity(vel_joints):
     global pub1, pub2, pub3, pub4, pub5, pub6
+    # print(vel_joints)
     pub1.publish(vel_joints[0])
     pub2.publish(vel_joints[1])
     pub3.publish(vel_joints[2])
@@ -61,33 +66,54 @@ def update_interaction_matrix(curr_features):
     global Lc, error
     fl = 530
     j=0
+    uc = 320
+    vc = 240
     for i in range(4):
         u = curr_features[i,0]
         v = curr_features[i,1]
-        z = curr_features[i,2]
-        # z = 1
-        Lc[j:j+2,:] = np.array([[-fl/z, 0, u/z, u*v/fl, -(fl*fl+u*u)/fl, v], [0, -fl/z, v/z, (fl*fl+v*v)/fl, -u*v/fl, -u]])
+        # z = curr_features[i,2]*0.5
+        z = 1
+        _u = u-uc
+        _v = v-vc
+        Lc[j:j+2,:] = np.array([[-fl/z, 0, _u/z, _u*_v/fl, -(fl*fl+_u*_u)/fl, _v], [0, -fl/z, _v/z, (fl*fl+_v*_v)/fl, -_u*_v/fl, -_u]])
         j=j+2
-    update_ee_velocity(Lc, error)
+    update_cam_velocity(Lc, error)
 
 
-def update_ee_velocity(Lc, error):
-    global vel_ee, vel_joints, jac_inverse
+def update_cam_velocity(Lc, error):
+    global vel_cam, vel_ee, vel_joints, jac_inverse, trans
     L_inverse = np.linalg.pinv(Lc)
     K = 0.01
-    vel_ee = -K * np.matmul(L_inverse, error)
-    # vel_ee[:3] = -vel_ee[:3]
+    vel_cam = -K * np.matmul(L_inverse, error)
+    print(vel_cam)
+    vel_ee = vel_cam
+    vel_ee[0] = -vel_cam[2]
+    vel_ee[3] = -vel_cam[5]
+    vel_ee[2] = vel_cam[0]
+    vel_ee[5] = vel_cam[3]
+
+    # V cmaera to V base conversion
+    transform.getTransformBaseWrist_hand(joint_states, trans)
+    rot = trans[:-1, :-1]
+    rot = np.linalg.pinv(rot)
+    vel_lin = vel_ee[:-3]
+    vel_ang = vel_ee[3:]
+    vel_ee = np.concatenate((np.matmul(rot, vel_lin), np.matmul(rot, vel_ang)), axis=None)
     # Joint Velocity Update
     vel_joints = np.matmul(jac_inverse, vel_ee)
+    # print(jac_inverse)
+    # print(vel_joints, vel_ee)
 
 def init():
     global pub1, pub2, pub3, pub4, pub5, pub6
     start = time.time()
     while ((time.time() - start)<12):
         pub1.publish(0.05)
-        pub4.publish(-0.07)
+        pub4.publish(-0.1)
+        pub6.publish(0.04)
     pub1.publish(0.0)
     pub4.publish(0.0)
+    pub6.publish(0.0)
 
 ##################################### Callbacks ###############################################
 
@@ -121,7 +147,7 @@ def Img_RGB_Callback(rgb_data):
     cv2.waitKey(1)
 
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
-    print(curr_features, math.sqrt(np.sum(np.square(error))))
+    # print(curr_features)
     update_interaction_matrix(curr_features)
     publish_joint_velocity(vel_joints)
 
@@ -130,12 +156,18 @@ def Image_Depth_Callback(depth_data):
     global curr_features, centre_yellow, centre_blue, centre_green, centre_red
     bridge = CvBridge()
     depth_img = bridge.imgmsg_to_cv2(depth_data, desired_encoding='passthrough')
+    # cv2.circle(depth_img, (640,460), 5, (200, 100, 255), -1)
+    # cv2.circle(depth_img, (int(des_features[0][0]),int(des_features[0][1])), 5, (255, 0, 255), -1)
+    # cv2.circle(depth_img, (int(des_features[1][0]),int(des_features[1][1])), 5, (255, 0, 255), -1)
+    # cv2.circle(depth_img, (int(des_features[2][0]),int(des_features[2][1])), 5, (255, 0, 255), -1)
+    # cv2.circle(depth_img, (int(des_features[3][0]),int(des_features[3][1])), 5, (255, 0, 255), -1)
 
     curr_features[0][2] = depth_img[centre_red[0]][centre_red[1]]
     curr_features[1][2] = depth_img[centre_blue[0]][centre_blue[1]]
     curr_features[2][2] = depth_img[centre_green[0]][centre_green[1]]
     curr_features[3][2] = depth_img[centre_yellow[0]][centre_yellow[1]]
-
+    # cv2.imshow("depth", depth_img)
+    # cv2.waitKey(1)
     update_interaction_matrix(curr_features)
     publish_joint_velocity(vel_joints)
 
@@ -161,7 +193,7 @@ def main():
     rospy.init_node("ibvs", anonymous="True")    
     # init()
     get_jacobian()
-    get_image()
+    get_image()     
     rospy.spin()
 
 if __name__=='__main__':
