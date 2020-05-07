@@ -47,18 +47,15 @@ pub4 = rospy.Publisher("/reachy/elbow_pitch_velocity_controller/command", Float6
 pub5 = rospy.Publisher("/reachy/forearm_yaw_velocity_controller/command", Float64, queue_size=10)
 pub6 = rospy.Publisher("/reachy/wrist_pitch_velocity_controller/command", Float64, queue_size=10)    
 
-
 def publish_joint_velocity(vel_joints):
     global pub1, pub2, pub3, pub4, pub5, pub6
-    global error
-    print(error)
+    # print(vel_joints)
     pub1.publish(vel_joints[0])
     pub2.publish(vel_joints[1])
     pub3.publish(vel_joints[2])
     pub4.publish(vel_joints[3])
     pub5.publish(vel_joints[4])
     pub6.publish(vel_joints[5])
-
 
 def update_interaction_matrix(curr_features):
     global Lc, error
@@ -69,7 +66,7 @@ def update_interaction_matrix(curr_features):
     for i in range(4):
         u = curr_features[i,0]
         v = curr_features[i,1]
-        z = curr_features[i,2]
+        z = curr_features[i,2]*0.5
         #z = 1
         _u = u-uc
         _v = v-vc
@@ -83,7 +80,7 @@ def update_cam_velocity(Lc, error):
     L_inverse = np.linalg.pinv(Lc)
     K = 0.05
     vel_cam = -K * np.matmul(L_inverse, error)
-    #print(vel_cam)
+    print(vel_cam)
     vel_ee = vel_cam
     vel_ee[0] = -vel_cam[2]
     vel_ee[3] = -vel_cam[5]
@@ -131,28 +128,24 @@ def Img_RGB_Callback(rgb_data):
     centre_yellow = feature_extract.extract_features(hsv_img, "yellow")
     curr_features[0][0] = centre_red[0]
     curr_features[0][1] = centre_red[1]
-    curr_features[0][2] = centre_red[2]
     curr_features[1][0] = centre_blue[0]
     curr_features[1][1] = centre_blue[1]
-    curr_features[1][2] = centre_blue[2]
     curr_features[2][0] = centre_green[0]
-    curr_features[2][1] = centre_green[1]
-    curr_features[2][2] = centre_green[2]
+    curr_features[2][1] = centre_green[1]    
     curr_features[3][0] = centre_yellow[0]
-    curr_features[3][1] = centre_yellow[1]
-    curr_features[3][2] = centre_yellow[2]
+    curr_features[3][1] = centre_yellow[1]    
 
     cv2.circle(rgb_img, (int(des_features[0][0]),int(des_features[0][1])), 5, (255, 0, 255), -1)
     cv2.circle(rgb_img, (int(des_features[1][0]),int(des_features[1][1])), 5, (255, 0, 255), -1)
     cv2.circle(rgb_img, (int(des_features[2][0]),int(des_features[2][1])), 5, (255, 0, 255), -1)
     cv2.circle(rgb_img, (int(des_features[3][0]),int(des_features[3][1])), 5, (255, 0, 255), -1)
-    cv2.imshow("Preview", rgb_img)
+    cv2.imshow("sample", rgb_img)
     cv2.waitKey(1)
 
     error = np.reshape((curr_features[:,:-1]-des_features[:,:-1]), (8,1))
     # print(curr_features)
     update_interaction_matrix(curr_features)
-    publish_joint_velocity(vel_joints)
+    ##publish_joint_velocity(vel_joints)
 
 def Image_Depth_Callback(depth_data):
     global curr_features, centre_yellow, centre_blue, centre_green, centre_red
@@ -171,14 +164,16 @@ def Image_Depth_Callback(depth_data):
     # cv2.imshow("depth", depth_img)
     # cv2.waitKey(1)
     update_interaction_matrix(curr_features)
-    #publish_joint_velocity(vel_joints)
+    ##publish_joint_velocity(vel_joints)
 
 def Joint_State_Callback(data):
     global joint_states, jac_inverse, vel_ee, vel_joints
     joint_states = np.asarray(data.position)
     jac_inverse = jacobian_function.calc_jack(joint_states[0], joint_states[1], joint_states[2], joint_states[3], joint_states[4], joint_states[5])
-    # print(jac_inverse)
-    vel_joints = np.matmul(jac_inverse, vel_ee)
+    vel_e = np.zeros(6)
+    vel_e=[0,0,0.1,0,0,0.0]
+    vel_joints = np.matmul(jac_inverse, vel_e)
+    print(vel_joints)
     publish_joint_velocity(vel_joints)
 
 ##################################### Callbacks ###############################################
@@ -188,14 +183,14 @@ def get_jacobian():
 
 def get_image():
     rospy.Subscriber("/camera/rgb/image_raw", Image, Img_RGB_Callback)
-    #rospy.Subscriber("/camera/depth/image_raw", Image, Image_Depth_Callback)
+    rospy.Subscriber("/camera/depth/image_raw", Image, Image_Depth_Callback)
 
 def main():
     global jac_inverse
     rospy.init_node("ibvs", anonymous="True")    
     #init()
     get_jacobian()
-    get_image()     
+    #get_image()     
     rospy.spin()
 
 if __name__=='__main__':

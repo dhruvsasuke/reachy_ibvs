@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+from math import sqrt
 
 red_lower = np.array ([0, 50 , 50], np.uint8)
 red_upper = np.array ([20, 255, 255], np.uint8)
@@ -16,15 +16,18 @@ kernal = np.ones((15,15), "uint8")
 def extract_features(hsv_image, color="red"):
     global red_lower, red_upper, green_lower, green_upper
     global blue_lower, blue_upper, yellow_lower, yellow_upper
-    
     if(color == "red"):
         mask = cv2.inRange(hsv_image, red_lower, red_upper)
+        P=55.08
     elif (color == "blue"):
         mask = cv2.inRange(hsv_image, blue_lower, blue_upper)
+        P=54.9
     elif (color == "green"):
         mask = cv2.inRange(hsv_image, green_lower, green_upper)
+        P=55.81
     elif (color == "yellow"):
         mask = cv2.inRange(hsv_image, yellow_lower, yellow_upper)
+        P=55.38
     else:
         return (-1,-1)
     
@@ -33,5 +36,12 @@ def extract_features(hsv_image, color="red"):
     sorted_cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
     cnt = sorted_cnts[0]
     moments = cv2.moments(cnt)
-    centre = (int(moments['m10'] / moments['m00']), int(moments['m01'] / moments['m00']))
-    return centre
+    #Depth calculation
+    #Known Variables
+    actual_diameter=0.1
+    area= moments['m00']
+    diameter= sqrt(area*4/3.142)
+    F=P*1/actual_diameter
+    depth= actual_diameter*F/diameter
+    centre = (int(moments['m10'] / moments['m00']), int(moments['m01'] / moments['m00']),depth)
+    return centre 
