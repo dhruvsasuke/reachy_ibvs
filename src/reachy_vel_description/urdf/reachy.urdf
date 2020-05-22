@@ -247,11 +247,11 @@
     </collision>
   </link>
 
-  <joint name="kinect_hand" type="fixed">
+  <joint name="kinect_hand" type="revolute">
     <parent link="wrist_hand"/>
     <child link="kinect"/>
     <axis xyz="0 0 1"/>
-    <limit lower="3.0" upper="3.0" effort="3.0" velocity="0.0"/>
+    <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/>
   </joint>
 
 
