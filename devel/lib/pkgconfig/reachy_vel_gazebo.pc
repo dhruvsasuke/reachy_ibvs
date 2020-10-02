@@ -1,8 +1,0 @@
-prefix=/home/dhruv/reachy_vel/devel
-
-Name: reachy_vel_gazebo
-Description: Description of reachy_vel_gazebo
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
